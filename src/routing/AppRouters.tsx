@@ -1,10 +1,5 @@
 import { FC, ReactNode, Suspense, lazy } from "react";
-import {
-  BrowserRouter,
-  Outlet,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { Can } from "@/utils/context/ability";
 import { SplashScreen } from "@/components/Splash/SplashScreen";
 import PrivateRoutes from "./PrivateRoutes";
@@ -48,7 +43,6 @@ const AppRoutes: FC = () => {
           path="/login"
           element={
             <Suspense fallback={<SplashScreen />}>
-                <div className=" text-black">Login</div>
               <LoginPage />
             </Suspense>
           }

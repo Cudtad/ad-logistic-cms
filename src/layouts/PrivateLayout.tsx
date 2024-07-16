@@ -10,7 +10,7 @@ import {
   message,
   theme,
 } from "antd";
-// import Logo from "@/assets/logo.png";
+import Logo from "@/assets/logo.png";
 import LogoSmall from "@/assets/logo-small.png";
 import {
   AppstoreOutlined,
@@ -19,6 +19,7 @@ import {
   LogoutOutlined,
   UserOutlined,
   ContainerOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 import useAuthStore from "@/modules/auth/store/auth.store";
 import { logout } from "@/modules/auth/api/auth.api";
@@ -59,6 +60,12 @@ const NavigationItems: any[] = [
     key: "/order-management",
     label: "Quản lý đơn hàng",
     icon: <ContainerOutlined />,
+    permission: [ACTION.READ, SUBJECT.ORDER],
+  },
+  {
+    key: "/unit-management",
+    label: "Quản lý đơn vị",
+    icon: <TeamOutlined />,
     permission: [ACTION.READ, SUBJECT.ORDER],
   },
 ];
@@ -147,7 +154,7 @@ const PrivateLayout: FC = () => {
         collapsible
         className="max-h-screen overflow-y-auto"
       >
-        {/* <Link to="/">
+        <Link to="/">
           <div className="h-24 flex items-center">
             {collapsed ? (
               <img className="h-7 mx-auto" src={LogoSmall} alt="logo" />
@@ -155,7 +162,7 @@ const PrivateLayout: FC = () => {
               <img className="h-14 mx-auto" src={Logo} alt="logo" />
             )}
           </div>
-        </Link> */}
+        </Link>
         <Menu
           theme="dark"
           items={navigationItems}

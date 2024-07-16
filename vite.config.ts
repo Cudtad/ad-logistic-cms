@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
 // https://vitejs.dev/config/
-export default ({ mode }) => {
+export default ({ mode }: any) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
   const devProxyServer = process.env.VITE_DEV_PROXY_SERVER;
   const proxy = {};

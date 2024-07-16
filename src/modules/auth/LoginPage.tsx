@@ -26,7 +26,7 @@ const LoginPage = () => {
   };
   return (
     <div className="min-h-screen bg-gray-100 pt-24">
-      <img src={Logo} className="mx-auto w-60 h-60 block" />
+      <img src={Logo} className="mx-auto h-40 w-48 block mb-8" />
       <Card title="Đăng nhập" bordered={false} className="max-w-md mx-auto">
         <Form
           name="normal_login"

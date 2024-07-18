@@ -2,11 +2,19 @@ import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
+// Define the type for the proxy object
+interface ProxyOptions {
+  [key: string]: {
+    target: string;
+    changeOrigin: boolean;
+  };
+}
+
 // https://vitejs.dev/config/
-export default ({ mode }: any) => {
+export default ({ mode }: { mode: string }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
   const devProxyServer = process.env.VITE_DEV_PROXY_SERVER;
-  const proxy = {};
+  const proxy: ProxyOptions = {};
 
   if (devProxyServer) {
     proxy["/api"] = {
@@ -14,6 +22,7 @@ export default ({ mode }: any) => {
       changeOrigin: true,
     };
   }
+
   return defineConfig({
     plugins: [react()],
     resolve: {

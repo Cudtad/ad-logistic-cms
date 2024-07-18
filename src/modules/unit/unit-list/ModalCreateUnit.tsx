@@ -42,7 +42,6 @@ export default function ModalCreateUnit({
       },
     });
   };
-
   return (
     <>
       <Modal
@@ -56,7 +55,11 @@ export default function ModalCreateUnit({
           form={form}
           initialValues={{
             name: editingUnit ? editingUnit.name : "",
-            // unitId: editingUnit?.unitId || undefined,
+            code: editingUnit ? editingUnit.code : "",
+            description: editingUnit ? editingUnit.description : "",
+            zoneId: editingUnit
+              ? editingUnit.zones.map((item: any) => item.id)
+              : [],
           }}
           autoComplete="off"
           layout="vertical"
@@ -75,7 +78,7 @@ export default function ModalCreateUnit({
             label="Code"
             rules={[{ required: true, message: "Code là bắt buộc điền!" }]}
           >
-            <Input />
+            <Input disabled={!!editingUnit} />
           </Form.Item>
           <Form.Item name="description" label="Mô tả">
             <Input />

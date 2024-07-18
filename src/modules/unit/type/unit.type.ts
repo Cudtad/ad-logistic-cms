@@ -23,9 +23,15 @@ export type CreateUnitDto = {
   name: string;
   code: string;
   description?: string;
-  zoneIds: string | number;
+  zoneIds: number[];
   config: {
     orderProcessFee: number;
     accountRentFee: number;
   };
+};
+
+export type UpdateUnitDto = {
+  name: string;
+  description?: string;
+  zoneIds: number[];
 };

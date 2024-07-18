@@ -4,10 +4,11 @@ import PrivateLayout from "@/layouts/PrivateLayout";
 import useAbility from "@/hooks/useAbility";
 import { IRoute, renderRoutes } from "./AppRouters";
 import { ACTION, SUBJECT } from "@/utils/constants";
-import UnitPage from "@/modules/unit/UnitPage";
 
 const DashboardPage = lazy(() => import("@/modules/dashboard/DashboardPage"));
 const UserPage = lazy(() => import("@/modules/users/UserPage"));
+const UnitPage = lazy(() => import("@/modules/unit/UnitPage"));
+const OrderPage = lazy(() => import("@/modules/order/OrderPage"));
 
 const DefaultPage = () => {
   const ability = useAbility();
@@ -32,9 +33,14 @@ const PrivateRoutes: FC = () => {
       permission: [ACTION.READ, SUBJECT.USER],
     },
     {
+      path: "/order-management/*",
+      page: <OrderPage />,
+      permission: [ACTION.READ, SUBJECT.ORDER],
+    },
+    {
       path: "/unit-management/*",
       page: <UnitPage />,
-      permission: [ACTION.READ, SUBJECT.USER],
+      permission: [ACTION.READ, SUBJECT.UNIT],
     },
   ];
 

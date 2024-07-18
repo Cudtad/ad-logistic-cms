@@ -66,7 +66,7 @@ const NavigationItems: any[] = [
     key: "/unit-management",
     label: "Quản lý đơn vị",
     icon: <TeamOutlined />,
-    permission: [ACTION.READ, SUBJECT.ORDER],
+    permission: [ACTION.READ, SUBJECT.UNIT],
   },
 ];
 

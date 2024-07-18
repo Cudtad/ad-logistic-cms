@@ -1,17 +1,29 @@
 import Table, { ColumnsType, TableProps } from "antd/es/table";
-import { CreateUnitDto, Unit, UnitQueryParams } from "../type/unit.type";
+import {
+  CreateUnitDto,
+  Unit,
+  UnitQueryParams,
+  UpdateUnitDto,
+} from "../type/unit.type";
 import { useMemo, useState } from "react";
-import { createUnit, getListUnit } from "../api/unit.api";
+import {
+  createUnit,
+  deleteUnit,
+  getListUnit,
+  updateUnit,
+} from "../api/unit.api";
 import { useQuery } from "@tanstack/react-query";
 import { pageSizeOptions } from "@/utils/table";
 import { SorterResult } from "antd/es/table/interface";
 import AppBreadcumb from "@/components/AppBreadcumb";
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Card, message } from "antd";
+import { Button, Card, message, Popconfirm } from "antd";
 import Title from "antd/es/typography/Title";
 import { Can } from "@/utils/context/ability";
 import { ACTION, SUBJECT } from "@/utils/constants";
 import ModalCreateUnit from "./ModalCreateUnit";
+import dayjs from "dayjs";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 export default function UnitList() {
   const [paramsUnits, setParamsUnits] = useState<UnitQueryParams>({
@@ -28,6 +40,21 @@ export default function UnitList() {
     gcTime: 60000,
     notifyOnChangeProps: "all",
   });
+
+  const handleConfirmDelete = async (id: number) => {
+    try {
+      await deleteUnit(id);
+      message.success("Xoá người dùng thành công!");
+      refetch();
+    } catch (error) {
+      message.error(`Error: ${error}`);
+    }
+  };
+
+  const handleEditModal = (record: Unit) => {
+    setEditingUnit(record);
+    setIsModalUnit(true);
+  };
 
   const columns: ColumnsType<Unit> = useMemo(
     () => [
@@ -53,18 +80,65 @@ export default function UnitList() {
       },
       {
         title: "Zone",
-        dataIndex: "zoneIds",
+        dataIndex: "zones",
         width: 100,
+        render: (value) =>
+          (value || []).map((zone: any) => zone.name).join(","),
       },
       {
         title: "Ngày tạo",
         dataIndex: "createdAt",
         width: 100,
+        render: (value) => dayjs(value).format("DD/MM/YYYY HH:mm:ss"),
       },
       {
         title: "Ngày cập nhật",
         dataIndex: "updatedAt",
         width: 100,
+        render: (value) => dayjs(value).format("DD/MM/YYYY HH:mm:ss"),
+      },
+      {
+        title: "Hành động",
+        width: 100,
+        fixed: "right",
+        render: (text, record) => {
+          return (
+            <div className="flex flex-row gap-x-2">
+              <Can I={ACTION.UPDATE} a={SUBJECT.USER}>
+                <Button
+                  size="small"
+                  onClick={() => handleEditModal(record)}
+                  icon={<EditOutlined />}
+                  type="primary"
+                ></Button>
+                <div className="h-6 w-[2px] bg-black"></div>
+              </Can>
+              <Can I={ACTION.DELETE} a={SUBJECT.USER}>
+                <Popconfirm
+                  title="Xoá đơn vị"
+                  placement="topRight"
+                  description={
+                    <div>
+                      Bạn có chắc muốn xoá đơn vị này?
+                      <br />
+                      <b>{text.name}</b>
+                    </div>
+                  }
+                  okText="Đồng ý"
+                  cancelText="Huỷ bỏ"
+                  onConfirm={() => handleConfirmDelete(text.id)}
+                >
+                  <Button
+                    danger
+                    size="small"
+                    icon={<DeleteOutlined />}
+                    type="primary"
+                  ></Button>
+                </Popconfirm>
+              </Can>
+            </div>
+          );
+        },
       },
     ],
     [],
@@ -108,20 +182,32 @@ export default function UnitList() {
   };
 
   const onSubmit = async (value: any) => {
+    console.log(value);
+
     try {
-      const data: CreateUnitDto = {
-        name: value.name,
-        code: value.code,
-        description: value.description,
-        zoneIds: value.zoneId,
-        config: {
-          orderProcessFee: 700,
-          accountRentFee: 0.015,
-        },
-      };
-      await createUnit(data);
-      message.success("Tạo mới đơn vị thành công!");
-      handleCloseModal();
+      if (editingUnit) {
+        const data: UpdateUnitDto = {
+          name: value.name,
+          description: value.description,
+          zoneIds: value.zoneId,
+        };
+        await updateUnit(editingUnit.id, data);
+        message.success("Cập nhập đơn vị thành công!");
+      } else {
+        const data: CreateUnitDto = {
+          name: value.name,
+          code: value.code,
+          description: value.description,
+          zoneIds: value.zoneId,
+          config: {
+            orderProcessFee: 700,
+            accountRentFee: 0.015,
+          },
+        };
+        await createUnit(data);
+        message.success("Tạo mới đơn vị thành công!");
+        handleCloseModal();
+      }
       refetch();
     } catch (error) {
       message.error(`Error: ${error}`);
